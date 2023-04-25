@@ -1,0 +1,77 @@
+%This function creates a linear regression line, used to find a line of best fit for a nonlinear dataset. The data is sorted by
+%ascending y values and the corresponding x values. Then, any values defined as an outlier by Wolfram's definition are deleted
+%from the dataset. The linear regression is then computed using all the remaining data! The output values are the sorted vector
+%of x-values, sorted vector of y-values, slope of linear regression, intercept of linear regression, and the coefficient of 
+%determination (showing how closely the line matches the data). The only input values needed are the x and y datasets being evaluated.
+
+%This function could be used after an experiment that collected some numerical data. After this data is stored in two vectors, one for
+%the independent and one for the dependent variable, the data may be put into this function. It may be useful to find a visible trend
+%that relates the two variables. The coefficient of determination would be useful in letting the users know if the data can reasonably
+%be analyzed in this way. So, an experiment comparing time to velocity of a falling object may look like:
+% X(time in deciseconds, recorded every second for 5 seconds) = 0:1:5
+% Y(velocity of object in m/s, recorded every second) = [0,9.4,17.2,26.0,38.9,47];
+%Plug into function: linearRegression(X,Y)... and outputs the output values.
+
+function [fX, fY, slope, intercept, Rsquared] = linearRegression(x,y)
+if(length(x) ~= length(y))
+   error("Data Vectors are not the same size!"); 
+end
+[sortedY, sortOrder] = sort(y);
+sortedX = x(sortOrder);
+Q1x = floor((length(sortedY) + 1)/4);
+Q3x = floor((3*(length(sortedY) + 1))/4);
+Q1 = sortedY(Q1x);
+Q3 = sortedY(Q3x);
+IQR = Q3 - Q1;
+while(1)
+    if((Q1-sortedY(1))>(IQR*1.50000))
+        sortedY(1) = [];
+        sortedX(1) = [];
+        Q3x = Q3x - 1;
+        Q1x = Q1x - 1;
+    else
+        break;
+    end
+    
+end
+while(1)
+    if((sortedY(length(sortedY))-Q3)>(IQR*1.50000))
+        sortedY(length(sortedY)) = [];
+    sortedX(length(sortedX)) = [];
+    else
+        break;
+    end
+end
+
+fX = sortedX;
+fY = sortedY;
+%linearRegression Computes the linear regression of a data set
+%   Compute the linear regression based on inputs:
+%     1. x: x-values for our data set
+%     2. y: y-values for our data set
+sumx = 0;
+sumy = 0;
+sumxtimesy = 0;
+sumxsquared = 0;
+sstot = 0;
+Yavg = mean(fY);
+for(i = 1:length(fX))
+    sumx = sumx + fX(i);
+    sumy = sumy+fY(i); 
+    sumxtimesy = sumxtimesy + fX(i)*fY(i);
+    sumxsquared = sumxsquared + fX(i)^2;
+    sstot = sstot + (fY(i)-Yavg)^2;
+end
+slope = (length(fY)*sumxtimesy - sumx*sumy)/(length(fY)*sumxsquared - sumx^2);
+intercept = (sumy - slope*sumx)/length(fY);
+
+fx = @(fX)(slope.*fX + intercept);
+
+ssres = 0;
+for(i = 1:length(fY))
+    ssres = ssres + (fY(i) - fx(fX(i)))^2;
+end
+
+Rsquared = 1 - ssres/sstot;
+
+end
