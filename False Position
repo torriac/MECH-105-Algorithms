@@ -1,0 +1,53 @@
+%Create a new function to call on for my false position code
+%falsePosition finds the root of a function using false position method
+%The outputs are the approximated root of the function, the value of the function at the approximated root, the last approximate error,...
+%and number of iterations completed. The required input values are the function being evaluated in terms of x (or the independent variable),...
+%the lower root guess, and the upper root guess. The optional input values are the stopping criterion, maximum iterations, and any...
+%additional parameters.
+
+%This function may be called to approximate the root of any function.
+%For example, a function call:
+%falsePosition((x.^3 - (x.^2)./exp(x) + 3), -1.5, 0, 0.01, 10) ...
+%would use false position method to find a value close to the value of the true root using the lower and upper bounds...
+%-1.5 and 0. The function would stop once the approximate error reaches below 1% or iterations goes above 10.
+
+function [root, fx, ea, iter] = falsePosition(func, xl, xu, es, maxit, varargin)
+%Throw errors if lower and upper bounds do not bracket a root and if function call does not provide necessary parameters
+if(func(xl)*func(xu) >= 0)
+    error("There is no sign change over interval specified");
+end
+
+    if(nargin < 3)
+    error("at least 3 inputs required: function and lower/upper bounds");
+    end
+%Set default stopping criterion and maximum iterations of function if they are not given in call to function
+    if(nargin < 4)
+    es = .0001;
+    maxit = 200;
+    end
+    if(nargin < 5)
+   maxit = 200;
+    end
+   
+root = xl;
+ea = 100;
+iter = 0;
+fx = 100;
+%Iterate false position steps until the approximate error is less than the stopping criterion or iterations reaches its max
+while((ea > es) & (iter < maxit) & (fx ~= 0))
+    oldRoot = root;
+    root = xu-((func(xu)*(xl-xu))/(func(xl)-func(xu)));
+    fx = func(root);
+    if(root ~= 0)
+    ea = abs(((root-oldRoot)/root)*100);
+    end
+    if(((fx > 0) & (func(xl) > 0)) | ((fx < 0) & (func(xl) < 0)))
+        xl = root;
+    else if(((fx > 0) & (func(xu) > 0)) | ((fx < 0) & (func(xu) < 0)))
+    xu = root;
+    else
+        ea = 0;
+    end
+    iter = iter + 1;
+end
+end
