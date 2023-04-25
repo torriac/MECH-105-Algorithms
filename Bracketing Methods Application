@@ -1,0 +1,27 @@
+%This is a very specific application of the bisection root finding method. Given a formula for the force on an object:
+%F = (mu*m*g)/(cos(theta) + mu*sin(theta)) .. and given the value of all the variables except the angle at which theta
+%is being pulled, this code subtracts over F to make the function equal to 0, which then allows us to find its root, giving
+%us the value of theta. The root is found with matlab's function "bisect". This built-in function outputs the estimated
+%value of the root, the value of the function at the estimated root, the last approximate error, and the number of
+%completed iterations. The input values are the function being evaluated, the lower root bound, and the upper root bound.
+
+% Define problem constants
+g = 9.81;
+mu = 0.55;
+F = 150;
+m = 25;
+theta = 0:0.0001:90;
+
+% Define the function to be solved for. Is the angle specified in radians or degrees?
+rootFunc = @(theta)((mu*m*g)./(cosd(theta) + mu.*sind(theta))-F);
+
+% Plot your function. Does plotting give you an idea about where the root is?
+plot(theta,rootFunc(theta)); xlabel("Angle of Force in Degrees"); ylabel("Total Force on Block");
+title("Angle vs. Magnitude of Force");
+
+% Finaly solve for the root using the bisection script given to you, which can be called as:
+%[root, fx, ea, iter] = bisect(func, lower_bound, upper_bound);
+[angle,fx,ea,iter] = bisect(rootFunc, 55, 75);
+format long
+angle
+fprintf("root:" + angle + ", total iterations: " + iter + ", approximate error: " + ea + ", f at root: " + fx);
