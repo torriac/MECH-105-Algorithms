@@ -1,0 +1,45 @@
+%This is an incomplete code used to solve for the lower and upper matrices and the pivot matrix of a given nxn matrix named "A".
+%LU and P matrices have many uses when dealing with and analyzing systems of equations, so this code attempts to make finding
+%those matrices very quick.
+
+function [L, U, P] = luFactor(A)
+% luFactor(A)
+%	LU decomposition with pivotiing
+% inputs:
+%	A = coefficient matrix
+% outputs:
+%	L = lower triangular matrix
+%	U = upper triangular matrix
+% P = the permutation matrix'
+
+rows = length(A(:,1));
+col = length(A(1,:));
+
+if rows ~= col
+    error("Invalid Matrix Size");
+end
+
+P = eye(rows);
+L = eye(rows);
+U = A;
+
+for i = 1:col-1;
+highVal = U(i,i);
+highValRow = i;
+for j = i+1:rows
+if abs(highVal) < abs(U(j,i))
+        highVal = U(j,i);
+        highValRow = j;
+end
+end
+if highValRow ~= i
+    U([highValRow i],:) = U([i highValRow],:);
+    P([highValRow i],:) = P([i highValRow],:);
+end
+for j = i+1:rows
+    temp = (U(j,i)/U(i,i))*(U(i,:));
+    L(j,i) = U(j,i)/U(i,i);
+    U(j,:) = U(j,:) - temp;
+end
+end
+    
