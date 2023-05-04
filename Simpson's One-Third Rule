@@ -4,6 +4,13 @@
 %Simpson's rule is applied to each interval between every point. If the number of intervals is odd, the trapezoid rule is
 %used for the last two points of the dataset.
 
+%In real life problems, exact integration may not be useful because there is not a function that can describe
+%a physical object or behavior. But, with the use of many data points collected from whatever is being analyzed,
+%a fairly accurate integral can be calculated with methods of integration such as Simpson's 1/3 Rule. A simple
+%application of this would be trying to find the area under a weirdly shaped object that was just or will be constructed.
+%By measuring heights of certain points from a surface to the bottom of the object, these points can be plugged into this function
+%to get an approximation of the area under it.
+
 function [I] = Simpson(x, y)
 
 % Inputs
