@@ -2,6 +2,10 @@
 %LU and P matrices have many uses when dealing with and analyzing systems of equations, so this code attempts to make finding
 %those matrices very quick.
 
+%Interactions between objects or fluids or anything can be analyzed with LU Decomposition if the A matrix is set up.
+%A real life example of an A matrix for this function would be air flow in and out of connected rooms. This airflow creates a system
+%that could be plugged into this function to get the tools to analyze the relationship between each room. 
+
 function [L, U, P] = luFactor(A)
 % luFactor(A)
 %	LU decomposition with pivotiing
